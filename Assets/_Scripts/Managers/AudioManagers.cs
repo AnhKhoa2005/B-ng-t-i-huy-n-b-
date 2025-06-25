@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class AudioManagers : MonoBehaviour
@@ -11,6 +11,7 @@ public class AudioManagers : MonoBehaviour
     [SerializeField] public AudioClip BGMusicClip;
     [SerializeField] public Slider MusicSlider;
     [SerializeField] public Slider SFXSlider;
+
     public static AudioManagers Instance;
 
     void Awake()
@@ -21,23 +22,37 @@ public class AudioManagers : MonoBehaviour
 
     void Start()
     {
+        // Load lại giá trị âm lượng từ PlayerPrefs
+        MusicSlider.value = PlayerPrefs.GetFloat("MusicVolume", 1f); // Mặc định 1
+        SFXSlider.value = PlayerPrefs.GetFloat("SFXVolume", 1f);
 
+        // Cập nhật giá trị volume ban đầu
+        ChangeBGMusic();
+
+        // Gán sự kiện mỗi khi slider thay đổi
+        MusicSlider.onValueChanged.AddListener((value) => SaveVolumes());
+        SFXSlider.onValueChanged.AddListener((value) => SaveVolumes());
+
+        // Bắt đầu phát nhạc nền
         if (BGMusic != null)
         {
             BGMusic.clip = BGMusicClip;
             BGMusic.Play();
         }
-
     }
 
     private void Update()
     {
         ChangeBGMusic();
     }
+
     public void ChangeBGMusic()
     {
-        BGMusic.volume = MusicSlider.value;
-        SFX.volume = SFXSlider.value;
+        if (BGMusic != null)
+            BGMusic.volume = MusicSlider.value;
+
+        if (SFX != null)
+            SFX.volume = SFXSlider.value;
     }
 
     public void SFXPlay(AudioClip clip)
@@ -46,5 +61,12 @@ public class AudioManagers : MonoBehaviour
         {
             SFX.PlayOneShot(clip);
         }
+    }
+
+    private void SaveVolumes()
+    {
+        PlayerPrefs.SetFloat("MusicVolume", MusicSlider.value);
+        PlayerPrefs.SetFloat("SFXVolume", SFXSlider.value);
+        PlayerPrefs.Save(); 
     }
 }
