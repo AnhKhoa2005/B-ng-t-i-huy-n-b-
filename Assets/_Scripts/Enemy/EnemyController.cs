@@ -31,7 +31,7 @@ public class EnemyController : MonoBehaviour, ITakeDamage
     {
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
-        if (distanceToPlayer <= chaseRange)
+        if (distanceToPlayer <= chaseRange) // Nếu khảng cách đến player nhỏ hơn khoảng cách đuổi thì true
         {
             chasingPlayer = true;
             // Giữ nguyên Y, chỉ thay đổi X theo player
@@ -39,9 +39,11 @@ public class EnemyController : MonoBehaviour, ITakeDamage
         }
         else
         {
+            //Nếu khoảng cách đến player lớn hơn khoảng cách đuổi thì false
             if (chasingPlayer)
             {
                 chasingPlayer = false;
+                //Lấy target gần nhất với player để nó quay về
                 float distToA = Vector3.Distance(transform.position, pointA.position);
                 float distToB = Vector3.Distance(transform.position, pointB.position);
                 targetPos = distToA < distToB ? pointB.position : pointA.position;
@@ -57,6 +59,7 @@ public class EnemyController : MonoBehaviour, ITakeDamage
         Vector3 newTargetPos = new Vector3(targetPos.x, transform.position.y, transform.position.z);
         transform.position = Vector3.MoveTowards(transform.position, newTargetPos, moveSpeed * Time.deltaTime);
 
+        // Nếu không đang đuổi theo player, kiểm tra xem có cần đổi điểm đến không
         if (!chasingPlayer)
         {
             if (Mathf.Abs(transform.position.x - targetPos.x) < 0.1f)
@@ -66,7 +69,7 @@ public class EnemyController : MonoBehaviour, ITakeDamage
         }
 
         // Xoay theo hướng di chuyển (trục X)
-        float directionX = newTargetPos.x - transform.position.x;
+        float directionX = newTargetPos.x - transform.position.x; //lấy hướng di chuyển
         if (directionX > 0.01f)
         {
             transform.localScale = new Vector3(1f, 1f, 1f);

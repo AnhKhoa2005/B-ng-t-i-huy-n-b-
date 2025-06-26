@@ -11,7 +11,7 @@ public class Bow : MonoBehaviour
 
     public void FireArrow(Vector3 xDir)
     {
-         this.xDir = xDir;
+        this.xDir = xDir;
         GameObject arrow = Instantiate(arrowPrefab, firePosition.position, Quaternion.identity);
         arrow.GetComponent<Arrow>().Init(arrowSpeed, damage, xDir);
         Destroy(arrow, 2f);
